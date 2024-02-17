@@ -1,0 +1,94 @@
+Gavriliu Andrei - 313CB 
+
+tema1.c:
+    -codHash: calculeaza codul hash aferent cheii prin insumarea codurilor ascii si impartirea la M
+    -afisareElement: primeste un void,caruia ii vom face cast la TElement;apoi putem apela campul value si sa il printam
+    -distrElement:  primeste un void,caruia ii vom face cast la TElement;apoi putem elibera campurile structurii,cat si pointerul la structura
+    -eliberareMemorie: functie ce distruge tabela hash,ditruge line si inchide fisierul de citire
+    -main:  -vom citi trei parametrii din linia de comanda:M,fisierul de intrare si fisierul de iesire
+            -initializam tabela hash folosind functia de initializare
+            -deschidem fisierul de intrare si incepem sa citim linie cu linie;folosind strtok aflam operatia 1 si operatia
+        -daca avem cazul put:-tot cu strtok aflam key si value;alocam un element de tip TElement si ii setam key si value
+                             -daca alocarea lui strdup nu a reusit distrugem elementul si folosim continue pentru a merge la iteratia urmatoare;
+                             -aflam rezultatul inserarii in rez,1 in caz afirmativ,0 in caz negativ
+                             -distrugem elementul daca inserarea nu s-a facut(elementul exista sau nu a reusit)
+        -daca avem cazul get:-il extragem pe key din fisier
+                             -apelam functia get si stocam sirul obtinut in value
+                             -in functie de value==NULL afisam NULL(nu exista) sau value(valoarea efectiva,daca exista)
+        -daca avem cazul remove:-il extragem pe key din fisier
+                                -apelam functia get si eliminam elementul ce are cheia key
+        -daca avem cazul find:-il extragem pe key din fisier
+                             -apelam functia find si stocam 0(esec) sau 1(succes) in found
+                             -in functie de found afisam mesajul corespunzator
+        -daca avem cazul print:-apelam functia printTH si afisam tabela hash
+        -daca avem cazul print_bucket:-extragem numarul din fisier si il convertim la intreg cu atoi
+                                      -daca numarul se gaseste in dimensiunile tabelei afisam lista corespunzatoare cu ajutorul functiei print_bucket
+        -in final eliberam memoria cu ajutorul functiei eliberareMemorie
+
+functiihash.c:
+    -IniTH:-functie ce intializeaza tabela hash;initalizam vectorul de liste,M si fh;
+           -functia va intoarce un pointer la tabela hash
+    -DistrTH:-functie ce distruge tabela hash;
+           -functia va intoarce un pointer la tabela hash
+           -avem 2 cazuri particulare,cand tabela este nula sau vectorul de liste este nul;
+           -incepem prin parcurgerea vectorului de liste si salvam mereu in prim inceputul fiecarei liste
+           -incepem sa parcurgem fiecare lista din vector si stocam urmatorul element fata de pozitia de inceput
+           -eliberam fiecare element al listei,iar cand intalnim urm=prim facem break si iesim din for
+    -putTH:-functie ce adauga un element in tabela
+           -calculam codul elementului si il stocam in cod
+           -salvam inceputul listei in prim
+           -incepem sa parcurgem lista pentru a verifica ca elementul sa nu fie deja inserat
+           -cand urmatorul element din lista este prim facem break
+           -rez va fi rezultatul functiei int insL2
+           -intoarcem rez
+    -getTH:-calculam codul elementului si il stocam in cod
+           -salvam inceputul listei in prim
+           -verificam validitatea lui prim
+           -incepem sa parcurgem lista si cautam cheia;cand o gasim ii intoarcem valoarea
+           -cand il intalnim pe prim iesim din for
+    -removeTH:-calculam codul elementului si il stocam in cod
+              -salvam inceputul listei in prim
+              -verificam validitatea lui prim
+              -incepem sa parcurgem lista si cautam cheia;cand o gasim eliminam celula respectiva prin refacerea legaturilor
+              -daca vrem sa eliminam primul element dintr-o lista cu un element vom face lista nula
+              -daca vrem sa eliminam primul element dintr-o lista cu mai multe elemente,vom muta capatul listei la al doilea element
+              -eliberam elementul 
+              -cand il gasim pe prim iesim din for
+    -findTH:-calculam codul elementului si il stocam in cod
+            -salvam inceputul listei in prim
+            -verificam validitatea lui prim
+            -incepem sa parcurgem lista si cautam cheia;cand o gasim intoarcem 1,altfel intoarcem 0
+    -printTH:-incepem sa parcugrem tabela hash
+              -salvam inceputul listei in prim
+              -verificam validitatea lui prim
+              -deschidem fisierul,incepem sa parcurgem fiecare lista si o afisam in fisier cu ajutorul functiei de afisareElement
+              -cand il gasim pe prim facem break
+
+functiiL2.c:
+    -cmpElement:-functie ce primeste 2 elemente de tip void,face cast la TElement,compara cheile si intoarce -1,0 sau 1 in functie de caz
+    -OrdoneazaL2:-functie ce primeste o lista si o ordoneaza
+                 -verificam validitatea listei
+                 -salvam inceputul listei
+                 -incepem sa iteram prin lista si salvam punctul de unde incepem iteratia
+                 -in paralel incepem sa iteram prin lista inceputa de la elementul urmator celui curent
+                 -comparam elementele si facem interschimbarea necesara
+                 -iesim din al doilea for;iesim din primul for
+    -InsL2:-functie ce insereaza un element in lista
+           -daca lista nu contine elemente,elementul inserat va fi primul(se va intra pe else)
+           -daca lista are mai multe elemente,intram pe prima conditie de if
+           -inserarea se face la finalul listei
+           -folosim OrdoneazaL2 pentru a ordona lista dupa fiecare inserare
+    print_bucket:-functie de afisare a listei
+                 -daca lista este vida afisam vida
+                 -salvam inceputul listei
+                 -iteram prin lista si afisam fiecare element folosind functia de afisare
+
+TCelula2:-informatia *info de tip void
+               -*pre pointer la celula precedenta
+               -*urm pointer la celula urmatoare
+
+TElement:-informatia din lista,cu 2 pointeri la char key si value
+TH:-structura tabela hash
+   -M:-numarul maxim de liste din tabela
+   -fh:-functia hash
+   -v:-vectorul de liste
